@@ -1,23 +1,22 @@
 const setOptions = { //alguans fallas de ortografia 
 	Parent: (Element) => {
-		if (!Element.node) return;
-
-		let Parent = Element.options.Parent;
+		if (!Element.element) return;
+		
+		let Parent = Element.ElementConfigObject.Parent;
 		if (Parent instanceof CreateE) {
 			Parent = Parent.node;
 		} else if (typeof Parent === "string") {
 			Parent = document.getElementById(Parent);
 		}
-		Parent.appendChild(Element.node);
+		Parent.appendChild(Element.element);
 
 	},
-
+	
 	ClassList: (Element) => {
 		const Classes = Element.options.ClassList;
 		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'array': true, 'string': true }, catch: Classes }, FunctionError: 'setOptions > ClassList() "Type of value Error"' })
 		if (!ActualType.validation) return;
-
-		console.log(Classes)
+		
 		if (Array.isArray(Classes)) {
 			Classes.forEach((e) => {
 				console.log(e)
@@ -28,15 +27,15 @@ const setOptions = { //alguans fallas de ortografia
 		}
 	},
 
-	Styles: (Element) => {
-		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true }, catch: Element.options.Styles }, FunctionError: 'setOptions > Styles() "Type of value Error" ' })
+    Styles: (Element)=>{
+        const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true}, catch: Element.ElementConfigObject.Styles}, FunctionError: 'setOptions > Styles() "Type of value Error" ' })
 		if (!ActualType.validation) return;
-
-		const styles = Element.options.Styles;
-		for (let s in Element.options.Styles) {
-			Element.node.style[s] = styles[s]
-		}
-	},
+	
+        const styles = Element.ElementConfigObject.Styles;
+        for (let s in Element.ElementConfigObject.Styles){
+            Element.element.style[s] = styles[s] 
+        }
+    },
 	PropertyList: (Element) => {
 		const Properties = Element.options.PropertyList;
 		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true, 'string': true }, catch: Properties }, FunctionError: 'setOptions > PropetyList() "Type of value Error" ' })
@@ -56,13 +55,12 @@ const setOptions = { //alguans fallas de ortografia
 		if (!ActualType.validation || isAScriptTag.test(Properties)) {
 			return;
 		}
-		//const cleanHTML = DOMPurify.sanitize(Properties)
-		let cleanHTML = Properties
-		const template = document.createElement('template');
-		template.innerHTML = cleanHTML;
-		Element.node.appendChild(template.content.cloneNode(true))
-	},
-
+        const cleanHTML = DOMPurify.sanitize(Properties)
+        const template = document.createElement('template');
+        template.innerHTML = cleanHTML;
+        Element.element.appendChild(template.content.cloneNode(true))
+    },
+    
 	EventList: (Element) => { //mejorar eventos 
 		let eventList = Element.options.EventList;
 		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true }, catch: eventList }, FunctionError: 'setOptions > EventList() "Type of value Error" ' })
@@ -72,15 +70,15 @@ const setOptions = { //alguans fallas de ortografia
 			Element.node.addEventListener(event, eventList[event]);
 		}
 	},
-
+	
 	Children: (Element) => {
 
-		const Children = Element.options.Children;
+		const Children = Element.ElementConfigObject.Children;
 		if (!ErrorManager({ typeOfValue: { expectedTypes: { 'array': true, 'node': true, }, catch: Children }, FunctionError: 'setOptions > Children() "Type of value Error"' })) {
 			return;
 		}
 		if (Children instanceof Array) {
-			Children.forEach(function (child) {
+			Children.forEach(function(child) {
 				if (child instanceof CreateE) {
 					child.options.Parent = Element;
 					child.create();
@@ -92,7 +90,7 @@ const setOptions = { //alguans fallas de ortografia
 			Element.node.append(Children)
 		}
 	},
-
+	
 }
 /**
  * @param {String} ElementTag
@@ -114,7 +112,6 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 		"img": "img",
 		"titleBox": "titleBox"
 	};
-	ElementTag
 	constructor(ElementTag, ComponentName, ElementConfigObject = { ClassList: ["Example-class"], PropertyList: { Propety: 'value' }, EventList: { Event: () => { } }, Parent: Node, Children: [] }) {
 		this.tag = ElementTag.toLowerCase();
 		this.name = ComponentName;
@@ -136,7 +133,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 				setOptions[config](this);
 			}
 		}
-
+		
 	}
 	add(NewConfig) {
 		//falta re hacer este código, tiene muchas responsabilidades...
@@ -160,7 +157,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 			}
 			if (Object.prototype.hasOwnProperty.call(this.options, config) && config in setOptions) {
 				setOptions[config](this);
-
+				
 			}
 		}
 	}
@@ -173,14 +170,13 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 		} else {
 			ReUpdate(ReConfigurationObject)
 		}
-
 		function Replace(RCO) {
 			ECO = structuredClone(RCO)
 		}
-
+		
 		function ReUpdate(RCO) {
 			for (let key in RCO) {
-
+				
 				if (!(Object.prototype.hasOwnProperty.call(ECO, key))) { ECO = RCO[key]; continue; }
 				//tres casos posibles; array, objeto o string
 				if (GetType(ECO[key]) === "array") {
@@ -195,7 +191,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 					for (let ObjKys in RCO[key]) {
 						ECO[key][ObjKys] = RCO[key][ObjKys]
 					}
-
+					
 				} else { console.error(`Error en valores de configuración para clave "${key}", tipo: ${GetType(this.ElementConfigObject[key])}`); }
 			}
 		}
@@ -232,4 +228,4 @@ function ErrorManager(ErrorObject) {
     ❗ Tipo recibido: ${actualType}
     🔎 Valor:`, ErrorObject.typeOfValue.catch);
 	return { validation: false, type: actualType };
-}
+				  }
