@@ -1,96 +1,98 @@
-const setOptions = {//alguans fallas de ortografia 
+const setOptions = { //alguans fallas de ortografia 
 	Parent: (Element) => {
-		if (!Element.element) return;
+		if (!Element.node) return;
 		
-		let Parent = Element.ElementConfigObject.Parent;
+		let Parent = Element.options.Parent;
 		if (Parent instanceof CreateE) {
 			Parent = Parent.node;
 		} else if (typeof Parent === "string") {
 			Parent = document.getElementById(Parent);
 		}
-		Parent.appendChild(Element.element);
-
+		Parent.appendChild(Element.node);
+		
 	},
-
+	
 	ClassList: (Element) => {
-		const Classes = Element.ElementConfigObject.ClassList;
+		const Classes = Element.options.ClassList;
 		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'array': true, 'string': true }, catch: Classes }, FunctionError: 'setOptions > ClassList() "Type of value Error"' })
 		if (!ActualType.validation) return;
 		
+		console.log(Classes)
 		if (Array.isArray(Classes)) {
-			Classes.forEach(function (e) {
-				Element.element.classList.add(e);
+			Classes.forEach((e) => {
+				console.log(e)
+				Element.node.classList.add(e);
 			});
 		} else {
-			Element.element.classList.add(Classes)
+			Element.node.classList.add(Classes)
 		}
-
 	},
-
-    Styles: (Element)=>{
-        const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true}, catch: Element.ElementConfigObject.Styles}, FunctionError: 'setOptions > Styles() "Type of value Error" ' })
-		if (!ActualType.validation) return;
 	
-        const styles = Element.ElementConfigObject.Styles;
-        for (let s in Element.ElementConfigObject.Styles){
-            Element.element.style[s] = styles[s] 
-        }
-    },
+	Styles: (Element) => {
+		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true }, catch: Element.options.Styles }, FunctionError: 'setOptions > Styles() "Type of value Error" ' })
+		if (!ActualType.validation) return;
+		
+		const styles = Element.options.Styles;
+		for (let s in Element.options.Styles) {
+			Element.node.style[s] = styles[s]
+		}
+	},
 	PropertyList: (Element) => {
-		const Properties = Element.ElementConfigObject.PropertyList;
+		const Properties = Element.options.PropertyList;
 		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true, 'string': true }, catch: Properties }, FunctionError: 'setOptions > PropetyList() "Type of value Error" ' })
 		if (!ActualType.validation) {
 			return;
 		}
 		if (Properties instanceof Object) {
 			for (let property in Properties) {
-				Element.element.setAttribute(property, Properties[property]);
+				Element.node.setAttribute(property, Properties[property]);
 			}
 		}
 	},
-    FromTemplate: (Element)=>{
-        const Properties = Element.ElementConfigObject.FromTemplate;
-		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: {'string': true }, catch: Properties }, FunctionError: 'setOptions > FromTemplate() "Type of value Error" ' })
-        const isAScriptTag = /<\s*script\b[^>]*>([\s\S]*?)<\s*\/\s*script\s*>/gi;
-        if (!ActualType.validation || isAScriptTag.test(Properties)) { 
+	FromTemplate: (Element) => {
+		const Properties = Element.options.FromTemplate;
+		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'string': true }, catch: Properties }, FunctionError: 'setOptions > FromTemplate() "Type of value Error" ' })
+		const isAScriptTag = /<\s*script\b[^>]*>([\s\S]*?)<\s*\/\s*script\s*>/gi;
+		if (!ActualType.validation || isAScriptTag.test(Properties)) {
 			return;
 		}
-        const cleanHTML = DOMPurify.sanitize(Properties)
-        const template = document.createElement('template');
-        template.innerHTML = cleanHTML;
-        Element.element.appendChild(template.content.cloneNode(true))
-    },
-    
+		//const cleanHTML = DOMPurify.sanitize(Properties)
+		let cleanHTML = Properties
+		const template = document.createElement('template');
+		template.innerHTML = cleanHTML;
+		Element.node.appendChild(template.content.cloneNode(true))
+	},
+	
 	EventList: (Element) => { //mejorar eventos 
-		let eventList = Element.ElementConfigObject.EventList;
+		let eventList = Element.options.EventList;
 		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true }, catch: eventList }, FunctionError: 'setOptions > EventList() "Type of value Error" ' })
 		if (!ActualType.validation) return;
 		
 		for (let event in eventList) {
-			Element.element.addEventListener(event, eventList[event]);
+			Element.node.addEventListener(event, eventList[event]);
 		}
 	},
-
+	
 	Children: (Element) => {
-
-		const Children = Element.ElementConfigObject.Children;
+		
+		const Children = Element.options.Children;
 		if (!ErrorManager({ typeOfValue: { expectedTypes: { 'array': true, 'node': true, }, catch: Children }, FunctionError: 'setOptions > Children() "Type of value Error"' })) {
 			return;
 		}
 		if (Children instanceof Array) {
-			Children.forEach(function (child) {
+			Children.forEach(function(child) {
 				if (child instanceof CreateE) {
 					child.options.Parent = Element;
 					child.create();
 				} else if (child instanceof Node) {
-					Element.element.append(child);
+					Element.node.append(child);
 				}
 			});
 		} else {
-			Element.element.append(Children)
+			Element.node.append(Children)
 		}
 	},
-
+	
 }
 /**
  * @param {String} ElementTag
@@ -104,15 +106,16 @@ const setOptions = {//alguans fallas de ortografia
  */
 class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad y aplicar
 	static id = 1
-	static allElements = []; 
-	static components = {//mejorable
+	static allElements = [];
+	static components = { //mejorable
 		"card": "card",
 		"button": "button",
 		"input": "input",
 		"img": "img",
 		"titleBox": "titleBox"
 	};
-	constructor(ElementTag, ComponentName, ElementConfigObject = { ClassList: ["Example-class"], PropertyList: { Propety: 'value' }, EventList: { Event: () => { } }, Parent: Node, Children: [] }) {
+	ElementTag
+	constructor(ElementTag, ComponentName, ElementConfigObject = { ClassList: ["Example-class"], PropertyList: { Propety: 'value' }, EventList: { Event: () => {} }, Parent: Node, Children: [] }) {
 		this.tag = ElementTag.toLowerCase();
 		this.name = ComponentName;
 		this.options = ElementConfigObject;
@@ -133,7 +136,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 				setOptions[config](this);
 			}
 		}
-
+		
 	}
 	add(NewConfig) {
 		//falta re hacer este código, tiene muchas responsabilidades...
@@ -157,7 +160,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 			}
 			if (Object.prototype.hasOwnProperty.call(this.options, config) && config in setOptions) {
 				setOptions[config](this);
-
+				
 			}
 		}
 	}
@@ -170,13 +173,14 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 		} else {
 			ReUpdate(ReConfigurationObject)
 		}
+		
 		function Replace(RCO) {
 			ECO = structuredClone(RCO)
 		}
-
+		
 		function ReUpdate(RCO) {
 			for (let key in RCO) {
-
+				
 				if (!(Object.prototype.hasOwnProperty.call(ECO, key))) { ECO = RCO[key]; continue; }
 				//tres casos posibles; array, objeto o string
 				if (GetType(ECO[key]) === "array") {
@@ -191,7 +195,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 					for (let ObjKys in RCO[key]) {
 						ECO[key][ObjKys] = RCO[key][ObjKys]
 					}
-
+					
 				} else { console.error(`Error en valores de configuración para clave "${key}", tipo: ${GetType(this.ElementConfigObject[key])}`); }
 			}
 		}
@@ -202,10 +206,11 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 		}
 	}
 }
+
 function GetType(type) {
 	if (Array.isArray(type)) return 'array';
 	if (type === null) return 'null';
-    if (type === undefined) return 'undefined';
+	if (type === undefined) return 'undefined';
 	return typeof type;
 }
 /**
@@ -227,4 +232,4 @@ function ErrorManager(ErrorObject) {
     ❗ Tipo recibido: ${actualType}
     🔎 Valor:`, ErrorObject.typeOfValue.catch);
 	return { validation: false, type: actualType };
-}
+				  }
