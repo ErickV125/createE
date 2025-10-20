@@ -20,7 +20,18 @@ function reactive(obj) {
 		}
 	})
 }
-
+//Módulo de Drag and Drop
+//Módulo de Lazy Loading Generalizado
+//Módulo de Validación de Formularios
+//Módulo de Animaciones
+/**
+* Módulo de Estado Local (Local State Management)
+*	Propósito: Permitir que cada instancia de CreateE tenga un estado local 
+*r	eactivo para gestionar datos específicos del componente, como formularios o contadores.
+* Módulo de Internacionalización (i18n)
+*	Propósito: Permitir que los elementos soporten múltiples idiomas, 
+*	con traducción dinámica basada en un idioma seleccionado.
+ */
 const setOptions = { //alguans fallas de ortografia 
 	Parent: (Element) => {
 		if (!Element.node) return;
@@ -268,3 +279,41 @@ function ErrorManager(ErrorObject) {
 	}
 	return { validation: false, type: actualType };
 }
+
+/**
+ *	StateManager
+	Propósito: Gestionar el estado global de la aplicación, permitiendo compartir datos reactivos entre múltiples instancias de CreateE y otros componentes.
+	Funcionalidad sugerida:
+	Crear una clase que gestione un almacén de estado reactivo basado en el sistema reactive (usando Proxy) ya implementado en CreateE.
+	Métodos para:
+	setState(key, value): Actualizar el estado global.
+	getState(key): Obtener valores del estado.
+	subscribe(key, callback): Suscribir componentes a cambios en claves específicas.
+	Sincronización automática con instancias de CreateE que usen CreateE.reactiveValues. 
+ 
+	Router
+	Propósito: Implementar un sistema de enrutamiento para aplicaciones de página única (SPA), permitiendo navegar entre vistas sin recargar la página.
+	Funcionalidad sugerida:
+	Gestionar rutas basadas en la URL (usando window.location o la API History).
+	Métodos para:
+	defineRoute(path, component): Asocia una ruta a una instancia de CreateE o una función que renderiza elementos.
+	navigate(path): Cambia la ruta actual.
+	getCurrentRoute(): Obtiene la ruta activa.
+	Soporte para parámetros dinámicos (por ejemplo, /user/:id) y rutas anidadas.
+
+	ComponentFactory
+	Propósito: Simplificar la creación y gestión de componentes reutilizables, permitiendo definir plantillas de componentes con configuraciones predefinidas.
+	Funcionalidad sugerida:
+
+	Métodos para:
+
+	defineComponent(name, config): Registra un componente con una configuración base.
+	createComponent(name, overrides): Crea una instancia de CreateE basada en un componente registrado, con opciones sobrescritas.
+
+
+	Almacenar componentes en un registro global (extensión de CreateE.components).
+
+
+ */
+
+
