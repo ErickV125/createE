@@ -125,8 +125,10 @@ const setOptions = { //alguans fallas de ortografia
 		if (Children instanceof Array) {
 			Children.forEach(function (child) {
 				if (child instanceof CreateE) {
+	
 					child.options.Parent = Element;
 					child.create();
+					
 				} else if (child instanceof Node) {
 					Element.node.append(child);
 				}
@@ -135,7 +137,26 @@ const setOptions = { //alguans fallas de ortografia
 			Element.node.append(Children)
 		}
 	},
-
+	autoGenWords:(Element) =>{
+		const Properties = Element.options.autoGenWords;
+		const ActualType = ErrorManager({ typeOfValue: { expectedTypes: { 'object': true }, catch: Properties }, FunctionError: 'setOptions > FromTemplate() "Type of value Error" ' })
+		if (!ActualType.validation) {
+			return;
+		}
+		const inInterval = Properties.time / Properties.string.length;
+		let i = 0
+		let cad = ''
+		const interval = setInterval(function(){
+			Element.node.textContent='';
+			cad+=Properties.string[i]  
+			Element.node.textContent = cad + Properties.string[0]
+			i++
+			if(i == Properties.string.length){
+				Element.node.textContent = cad;
+				clearInterval(interval);
+			}
+		},inInterval)
+	}
 }
 /**
  * @param {String} ElementTag
@@ -169,6 +190,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 		
 	}
 	create() {
+		
 		if (this.name in CreateE.components) {
 			if (!Array.isArray(this.options.ClassList)) {
 				this.options.ClassList = [];
@@ -180,6 +202,7 @@ class CreateE { //Estudiar getters y setters y aplicar. estudiar la mutabilidad 
 				setOptions[config](this);
 			}
 		}
+		return this
 	}
 	add(NewConfig) {
 		//falta re hacer este código, tiene muchas responsabilidades...
@@ -280,6 +303,8 @@ function ErrorManager(ErrorObject) {
 	return { validation: false, type: actualType };
 }
 
+
+
 /**
  *	StateManager
 	Propósito: Gestionar el estado global de la aplicación, permitiendo compartir datos reactivos entre múltiples instancias de CreateE y otros componentes.
@@ -290,7 +315,7 @@ function ErrorManager(ErrorObject) {
 	getState(key): Obtener valores del estado.
 	subscribe(key, callback): Suscribir componentes a cambios en claves específicas.
 	Sincronización automática con instancias de CreateE que usen CreateE.reactiveValues. 
- 
+
 	Router
 	Propósito: Implementar un sistema de enrutamiento para aplicaciones de página única (SPA), permitiendo navegar entre vistas sin recargar la página.
 	Funcionalidad sugerida:

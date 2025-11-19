@@ -2,38 +2,18 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Ejemplo Reactivo</title>
+<title>Web task manager</title>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-<script src="create.js"></script>
 <link rel="stylesheet" href="style.css">
- 
 </head>
-<body>
-    
-    <div class="Display">
-        <nav class="left-bar">
-            
-        </nav>
-    </div>
-    <div class="Main-section" id="NewCursor">
-        <div class="box_card">
-            <img src="img/GoldShip.png" alt="">
-            <h1 >Goldship</h1>
-        </div>
-        <div class="box_card">
-            <img src="img/cap.png" alt="">
-            <h1 >Oguri cap</h1>
-        </div>
-        <div class="box_card">
-            <img src="img/kitsane.png" alt="">
-            <h1 >Kitsane black</h1>
-        </div>
-        <div class="box_card">
-            <img src="img/haru.png" alt="">
-            <h1 >Hary urara</h1>
-        </div>
+<body onclick="requestFullscreen();">
+    <div class="canvas-bg">
+        <canvas id="Background_canvas"></canvas>
     </div>
     
-<script src="main.js"></script>
+    
+<script src="create.js"></script>
+<script src="UI/UI_create.js"></script>
+<script src="UI/canvas_background.js"></script>
 </body>
 </html>
