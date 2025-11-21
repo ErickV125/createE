@@ -24,4 +24,4 @@ function menu(parent,arrayTexts,arrayListenersFuncs) {
     })
     UILista.create();
 }
-menu(document.body,['Iniciar','Ajustes','Salir'])
+menu(document.body,['Iniciar','Ajustes','Salir'],[{click:(parentNode)=>{}}])

@@ -145,11 +145,11 @@ class Lineas{
             this.returning = true;
         }else if(!this.returning){
             this.move[0] += Math.abs(this.vector[0]) *dt ;
-            this.move[1] += Math.abs(this.vector[1]) *dt; 
+            this.move[1] += Math.abs(this.vector[1]) *dt ; 
         }
         if(this.returning){
-            this.move[0] -= Math.abs(this.vector[0]) *dt;
-            this.move[1] -= Math.abs(this.vector[1]) *dt; 
+            this.move[0] -= Math.abs(this.vector[0]) *dt ;
+            this.move[1] -= Math.abs(this.vector[1]) *dt ; 
         }
     
         if(this.returning && this.move[0] <= 0 && this.move[1] <= 0){
@@ -169,6 +169,7 @@ class Lineas{
         ctxBg.lineWidth = 2
         ctxBg.strokeStyle = colors_ui.blackA;
         ctxBg.stroke()
+         
         ctxBg.closePath();
         return this;
 

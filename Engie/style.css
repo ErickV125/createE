@@ -74,7 +74,7 @@ body{
     font-size: xx-large;
     font-weight: 400;
     opacity: 0;
-    transform: translate(-33%);
+    transform: translate(-0%);
     transition: all 150ms, width 250ms, opacity 250ms, transform 250ms;
 }
 .start_transition_entrance{
