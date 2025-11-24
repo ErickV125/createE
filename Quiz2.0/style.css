@@ -1,0 +1,305 @@
+@font-face {
+
+    font-family: 'Nunito';
+
+    src: url('Nunito-VariableFont_wght.ttf') format('truetype');
+    /* Ajusta la ruta según la ubicación de tu fuente */
+}
+
+:root {
+    --br: .4em;
+     --padding: 0.4em;
+    --gap: 0.4em;
+    --progress: 0%;
+}
+
+:root {
+    --color-background: red;
+    --color-primary: blue;
+    --color-secondary: green;
+    --color-valid: lime;
+    --color-wrong: red;
+    --color-text: black;
+   
+}
+
+:root {
+    --color-background: rgb(20, 21, 23);
+    --color-primary: rgb(57, 57, 63);
+    --color-secondary: rgb(33, 33, 37);
+    --color-valid: rgb(141, 228, 141);
+    --color-wrong: rgb(221, 140, 140);
+    --color-text: rgb(255, 255, 255);
+}
+
+* {
+    font-family: "NiEr";
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    z-index: 2;
+    color: var(--color-text);
+    border-radius: var(--br);
+    font-family: "Nunito", sans-serif;
+}
+
+html {
+    font-size: 16px;
+    /* o 20px si quieres más grande */
+}
+
+body {
+    padding: var(--padding);
+    gap: var(--gap);
+    background: var(--color-background);
+    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: 1f;
+}
+.containerResults{
+    width: 100% !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: var(--padding);
+    gap:var(--gap);
+    background: var(--color-primary);
+}
+@media (max-width: 2000px) {
+    form,#resultsSection {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1025px) {
+    form,#resultsSection{
+        width: 60%;
+    }
+
+}
+
+
+.result{
+    position: relative;
+    width: 100%;
+    background-color: var(--color-secondary);
+    font-weight: 800;
+    padding: var(--padding);
+    gap:var(--gap);
+    overflow: hidden;
+}
+.result::after{
+    z-index: -1;
+    content: '';
+    width: var(--progress);
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--color-valid);
+    opacity: 1;
+    transition: all 20ms;
+}
+.result > p{
+    z-index: 200;
+}
+
+
+form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap);
+}
+
+/* seccion principal*/
+.Question-Container {
+    gap: var(--gap);
+
+    padding: var(--padding);
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--color-primary);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 220ms, opacity 300ms;
+
+}
+
+/* seccion de titulo*/
+.title-question {
+    display: flex;
+    gap: var(--gap);
+
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 220ms, opacity 300ms;
+
+
+}
+
+.num-question {
+    position: absolute;
+    display: flex;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+    max-width: 1em;
+    display: none;
+
+}
+
+/* seccion de imagen*/
+.img-container {
+    width: 100%;
+    height: auto;
+
+    background: var(--color-secondary);
+}
+
+.img-container img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.img-container>.img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-container>.btn {}
+
+.img-container>.left {}
+
+.img-container>.right {}
+
+/* seccion de opcion*/
+.options-container {
+    gap: var(--gap);
+
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--color-primary);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 220ms, opacity 300ms;
+}
+
+.options-container>.option {
+
+    width: 100%;
+    padding: var(--padding);
+
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background: var(--color-secondary);
+    border: 2px solid var(--color-background);
+    transition: 250ms all;
+}
+
+.options-container>.option {
+    font-weight: 600;
+}
+.options-container input[type='checkbox'] + .option{
+    border: 2px dashed var(--color-background);
+}
+.options-container > input:checked + .option{
+    background: var(--color-background);
+} 
+.finish .options-container > input + .true{
+    background: var(--color-valid);
+}
+.finish .options-container > input:checked + .false{
+    background: var(--color-wrong);
+}
+.start_transition_entrance {
+    opacity: 1;
+    transform: translateY(0%);
+}
+
+.btnSumarry {
+    background: var(--color-secondary);
+    border: 2px solid var(--color-background);
+    width: 100%;
+    padding: var(--padding);
+    height: 1.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.Summary-block {
+    bottom: -100%;
+    width: 100%;
+    background: var(--color-secondary);
+    min-height: 100%;
+    padding: var(--padding);
+
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: 1;
+    gap: var(--gap);
+
+    opacity: 1;
+    overflow: hidden;
+    height: 0;
+    opacity: 0;
+    transition: 250ms all;
+}
+
+.open {
+    opacity: 1;
+    padding: var(--padding);
+
+    height: auto;
+}
+.none{
+    display: none;
+}
+
+
+.divSectionText {
+    width: 100%;
+}
+
+.divSectionTable {
+    width: 100%;
+}
+
+.divSectionTable>table {
+    width: 100%;
+    background: var(--color-secondary);
+}
+
+.divSectionTable tr td {
+    padding: var(--padding);
+
+}
+
+.divSectionTable tr:nth-child(1) {
+    font-weight: bold;
+}
+
+.divSectionTable tr:nth-child(1) td {
+    background: var(--color-primary);
+}
+
+.divSectionTable td {
+    font-weight: bold;
+    background: var(--color-background);
+
+}
+.BTNFINISH{
+    width: 100%;
+    padding: var(--padding);
+    background: var(--color-primary);
+    border: 2px solid var(--color-secondary);
+    font-weight: 700;
+}
