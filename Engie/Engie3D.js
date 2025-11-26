@@ -23,9 +23,9 @@ class Face {
             total: vertices.length
         }
         this.triangles = []
-        this.counterClockwise();
-        this.triangulate()
-        console.log(this)
+        //this.counterClockwise();
+        //this.triangulate()
+        //console.log(this)
     }
     counterClockwise() { // (movi algo de esta funcion, porque se rompia al tener poligonos iregulares, paso de cross a cross3
         let area = 0
@@ -109,7 +109,72 @@ class Face {
         this.triangles.push(this.proceesTriangle(polygon));
     }
 }
+// Un objeto 3d esta hecho principalmente de poligonos, estos poligonos estan hechos con vertices, entonces la unidad basica son ellos.
+//podemos defenir una instancia 3d como un conjunto de instancias poligonales, a su vez, podemos definir un poligono como un conjunto de instancias der vertices
 
+
+
+
+
+
+
+//vertex = [x,y,z]
+//list = [v1,v2,v3...]
+const Epsilon = 1e-10;
+function CCW(vertices) {
+    const area = vertices.reduce((acc, Vcurr, i) => { return acc + cross([vertices[i][0], vertices[(i + 1) % vertices.length][1]], [vertices[(i + 1) % vertices.length][0], vertices[i][1]]) }, 0)
+    return (area / 2 > Epsilon) ? vertices : [...vertices].reverse();
+}
+function isConvexVertex(A, B, C) {//Toma tres puntos consecutivos:
+    const vector = [sub(A, B), sub(C, B)];
+    const resultCross = cross(vector[0], vector[1]);
+    if (resultCross > Epsilon) { return resultCross }
+}
+function PointInTriangle(triangle, polygon) {
+    const [A, B, C] = triangle;
+    for (let i = 0; i < polygon.length; i++) {
+        const P = polygon[i];
+        if (P === A || P === B || P === C) continue;
+        const s1 = cross(sub(B, A), sub(P, A));
+        const s2 = cross(sub(C, B), sub(P, B));
+        const s3 = cross(sub(A, C), sub(P, C));
+        if (s1 > Epsilon && s2 > Epsilon && s3 > Epsilon) {
+            return true;
+        }
+    }
+    return false;
+}
+function triangulate(vertices) {
+    const polygon = [...CCW(vertices)];
+    
+    const triangles = []
+    
+    
+    for (let i = 0; i < polygon.length; i++) {
+      
+        const [V1, V2, V3] = [polygon[(i - 1 + polygon.length) % polygon.length], polygon[i], polygon[(i + 1) % polygon.length]]
+        const triangle = [V1, V2, V3];
+        if (isConvexVertex(V1, V2, V3) > Epsilon && !PointInTriangle(triangle, polygon)) {
+            polygon.splice(i, 1);
+            i = -1
+            triangles.push(triangle)
+        }
+        
+    }
+    triangles.push(polygon)
+    return triangles
+}
+
+
+
+
+let polygon =[
+ [0,0],[3,-1],[6,0],[9,1],[11,4],
+ [10,7],[8,10],[5,12],[2,14],[-1,13],
+ [-3,10],[-4,7],[-5,4],[-4,2],[-3,1],
+ [-6,0],[-9,2],[-8,6],[-6,9],[-2,8]
+]
+console.log(triangulate(polygon))
 
 const cubeFaces = new Object3D([
     // Frontal
